@@ -74,26 +74,18 @@ export default function DemoPage() {
             </svg>
           </Link>
 
-          {/* Navigation */}
-          <div className="flex items-center gap-4">
-            {/* Demo Button (Active) */}
-            <button className="px-4 py-2 text-sm font-mono border border-green-600 bg-green-100 text-green-700 rounded font-bold">
-              Demo
+          {/* My Account Dropdown */}
+          <div className="relative group">
+            <button className="px-4 py-2 text-sm font-mono border border-gray-400 rounded hover:bg-gray-100">
+              My Account ▼
             </button>
-
-            {/* My Account Dropdown */}
-            <div className="relative group">
-              <button className="px-4 py-2 text-sm font-mono border border-gray-400 rounded hover:bg-gray-100">
-                My Account ▼
-              </button>
-              <div className="absolute right-0 mt-0 w-32 bg-white border border-gray-400 rounded shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
-                <a href="#login" className="block px-4 py-2 text-sm hover:bg-gray-100 border-b border-gray-300">
-                  Login
-                </a>
-                <a href="#signup" className="block px-4 py-2 text-sm hover:bg-gray-100">
-                  Sign Up
-                </a>
-              </div>
+            <div className="absolute right-0 mt-0 w-32 bg-white border border-gray-400 rounded shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
+              <a href="#login" className="block px-4 py-2 text-sm hover:bg-gray-100 border-b border-gray-300">
+                Login
+              </a>
+              <a href="#signup" className="block px-4 py-2 text-sm hover:bg-gray-100">
+                Sign Up
+              </a>
             </div>
           </div>
         </div>
@@ -115,7 +107,7 @@ export default function DemoPage() {
           </div>
 
           {/* Demo Products Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {demoProducts.map((product) => (
               <div key={product.name} className={`${product.color} border ${product.borderColor} rounded-lg p-8 hover:shadow-xl transition-shadow`}>
                 <div className="text-5xl mb-4">{product.icon}</div>
@@ -135,6 +127,13 @@ export default function DemoPage() {
                 </button>
               </div>
             ))}
+          </div>
+
+          {/* Demo Navigation Button */}
+          <div className="flex justify-center">
+            <Link href="/" className="px-8 py-3 text-sm font-mono border-2 border-green-600 bg-green-50 text-green-700 rounded hover:bg-green-100 transition-colors font-bold">
+              ← Back to Home
+            </Link>
           </div>
         </div>
       </section>

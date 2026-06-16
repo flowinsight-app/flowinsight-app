@@ -110,26 +110,18 @@ export default function Home() {
             </svg>
           </Link>
 
-          {/* Navigation */}
-          <div className="flex items-center gap-4">
-            {/* Demo Button */}
-            <Link href="/demo" className="px-4 py-2 text-sm font-mono border border-green-600 bg-green-50 text-green-700 rounded hover:bg-green-100 transition-colors">
-              Demo
-            </Link>
-
-            {/* My Account Dropdown */}
-            <div className="relative group">
-              <button className="px-4 py-2 text-sm font-mono border border-gray-400 rounded hover:bg-gray-100">
-                My Account ▼
-              </button>
-              <div className="absolute right-0 mt-0 w-32 bg-white border border-gray-400 rounded shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
-                <a href="#login" className="block px-4 py-2 text-sm hover:bg-gray-100 border-b border-gray-300">
-                  Login
-                </a>
-                <a href="#signup" className="block px-4 py-2 text-sm hover:bg-gray-100">
-                  Sign Up
-                </a>
-              </div>
+          {/* My Account Dropdown */}
+          <div className="relative group">
+            <button className="px-4 py-2 text-sm font-mono border border-gray-400 rounded hover:bg-gray-100">
+              My Account ▼
+            </button>
+            <div className="absolute right-0 mt-0 w-32 bg-white border border-gray-400 rounded shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
+              <a href="#login" className="block px-4 py-2 text-sm hover:bg-gray-100 border-b border-gray-300">
+                Login
+              </a>
+              <a href="#signup" className="block px-4 py-2 text-sm hover:bg-gray-100">
+                Sign Up
+              </a>
             </div>
           </div>
         </div>
@@ -202,13 +194,20 @@ export default function Home() {
       <section className="w-full py-20 sm:py-32 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-300">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-bold text-black mb-12">Products</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {products.map((product) => (
               <div key={product.name} className={`${product.color} border ${product.borderColor} rounded p-6 hover:shadow-lg transition-shadow`}>
                 <h3 className="text-lg sm:text-xl font-bold text-black mb-3">{product.name}</h3>
                 <p className="text-gray-700 text-sm sm:text-base leading-relaxed">{product.description}</p>
               </div>
             ))}
+          </div>
+
+          {/* Demo Button */}
+          <div className="flex justify-center">
+            <Link href="/demo" className="px-8 py-3 text-sm font-mono border-2 border-green-600 bg-green-50 text-green-700 rounded hover:bg-green-100 transition-colors font-bold">
+              View Demo →
+            </Link>
           </div>
         </div>
       </section>
