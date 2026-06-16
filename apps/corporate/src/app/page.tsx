@@ -165,31 +165,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* MISSION & VISION SECTION - SIDE BY SIDE ON LARGE SCREENS */}
-      <section className="w-full py-20 sm:py-32 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-300">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Mission */}
-            <div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-black mb-8">Mission</h2>
-              <p className="text-lg sm:text-xl text-gray-700 leading-relaxed">
-                Eliminate the gap between data existence and data utilization by creating intelligent, 
-                real-time insights that enable organizations to make data-driven decisions at every level.
-              </p>
-            </div>
-
-            {/* Vision */}
-            <div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-black mb-8">Vision</h2>
-              <p className="text-lg sm:text-xl text-gray-700 leading-relaxed">
-                Where Data Flows Into Intelligence - Transforming traditional business management 
-                into proactive, insight-driven operations across all industries.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* PRODUCTS SECTION */}
       <section className="w-full py-20 sm:py-32 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-300">
         <div className="max-w-7xl mx-auto">
