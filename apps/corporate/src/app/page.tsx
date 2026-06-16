@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function Home() {
   const [activePoint, setActivePoint] = useState(0);
@@ -95,7 +96,7 @@ export default function Home() {
       <header className="fixed w-full bg-white border-b border-gray-300 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           {/* Logo */}
-          <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <span className="text-2xl font-bold text-black">FLOW INSIGHT</span>
             <svg width="32" height="32" viewBox="0 0 32 32" className="">
               <polyline
@@ -107,20 +108,28 @@ export default function Home() {
                 strokeLinejoin="round"
               />
             </svg>
-          </div>
+          </Link>
 
-          {/* My Account Dropdown */}
-          <div className="relative group">
-            <button className="px-4 py-2 text-sm font-mono border border-gray-400 rounded hover:bg-gray-100">
-              My Account ▼
-            </button>
-            <div className="absolute right-0 mt-0 w-32 bg-white border border-gray-400 rounded shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
-              <a href="#login" className="block px-4 py-2 text-sm hover:bg-gray-100 border-b border-gray-300">
-                Login
-              </a>
-              <a href="#signup" className="block px-4 py-2 text-sm hover:bg-gray-100">
-                Sign Up
-              </a>
+          {/* Navigation */}
+          <div className="flex items-center gap-4">
+            {/* Demo Button */}
+            <Link href="/demo" className="px-4 py-2 text-sm font-mono border border-green-600 bg-green-50 text-green-700 rounded hover:bg-green-100 transition-colors">
+              Demo
+            </Link>
+
+            {/* My Account Dropdown */}
+            <div className="relative group">
+              <button className="px-4 py-2 text-sm font-mono border border-gray-400 rounded hover:bg-gray-100">
+                My Account ▼
+              </button>
+              <div className="absolute right-0 mt-0 w-32 bg-white border border-gray-400 rounded shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
+                <a href="#login" className="block px-4 py-2 text-sm hover:bg-gray-100 border-b border-gray-300">
+                  Login
+                </a>
+                <a href="#signup" className="block px-4 py-2 text-sm hover:bg-gray-100">
+                  Sign Up
+                </a>
+              </div>
             </div>
           </div>
         </div>
