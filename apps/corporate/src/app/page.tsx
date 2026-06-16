@@ -99,7 +99,7 @@ export default function Home() {
             <span className="text-2xl font-bold text-black">FLOW INSIGHT</span>
             <svg width="32" height="32" viewBox="0 0 32 32" className="">
               <polyline
-                points="2,24 8,16 14,18 20,10 26,14"
+                points="2,20 8,12 14,16 20,8 26,4"
                 fill="none"
                 stroke="#22c55e"
                 strokeWidth="2.5"
