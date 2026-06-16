@@ -116,12 +116,12 @@ export default function Home() {
               My Account ▼
             </button>
             <div className="absolute right-0 mt-0 w-32 bg-white border border-gray-400 rounded shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
-              <a href="#login" className="block px-4 py-2 text-sm hover:bg-gray-100 border-b border-gray-300">
+              <Link href="/login" className="block px-4 py-2 text-sm hover:bg-gray-100 border-b border-gray-300">
                 Login
-              </a>
-              <a href="#signup" className="block px-4 py-2 text-sm hover:bg-gray-100">
+              </Link>
+              <Link href="/signup" className="block px-4 py-2 text-sm hover:bg-gray-100">
                 Sign Up
-              </a>
+              </Link>
             </div>
           </div>
         </div>
