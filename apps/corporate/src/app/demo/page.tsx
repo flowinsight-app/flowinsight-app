@@ -9,21 +9,48 @@ export default function DemoPage() {
       color: 'bg-orange-50',
       borderColor: 'border-orange-300',
       description: 'Healthcare facility operations platform. Manage patients, clinics, appointments, medical records, and streamline clinical workflows.',
-      icon: '🏥'
+      icon: '🏥',
+      isActive: false
     },
     {
       name: 'Doctor Flow',
       color: 'bg-blue-50',
       borderColor: 'border-blue-300',
-      description: 'Uber-style marketplace connecting doctors with healthcare facilities. Real-time location matching, smart notifications, and direct connections.',
-      icon: '👨‍⚕️'
+      description: 'Real-time marketplace connecting doctors with healthcare facilities. Location-aware matching, smart notifications, and direct connections.',
+      icon: '👨‍⚕️',
+      isActive: true
+    },
+    {
+      name: 'Cash Flow',
+      color: 'bg-green-50',
+      borderColor: 'border-green-300',
+      description: 'Complete financial management and accounting solution. Track transactions, manage invoices, analyze cash flow, and generate financial reports in real-time.',
+      icon: '💰',
+      isActive: false
+    },
+    {
+      name: 'Guest Flow',
+      color: 'bg-blue-100',
+      borderColor: 'border-blue-400',
+      description: 'Comprehensive guest management system. Manage bookings, reservations, loyalty programs, and guest communications for hospitality services.',
+      icon: '🏨',
+      isActive: false
+    },
+    {
+      name: 'Cuisine Flow',
+      color: 'bg-purple-50',
+      borderColor: 'border-purple-300',
+      description: 'Restaurant operations management. Food cost tracking, recipe management, menu optimization, and kitchen operations for culinary businesses.',
+      icon: '🍽️',
+      isActive: false
     },
     {
       name: 'Spirit Flow',
       color: 'bg-red-50',
       borderColor: 'border-red-300',
       description: 'Bar and liquor management system. Real-time inventory tracking, variance detection, stock transfers, and profit optimization for beverage operations.',
-      icon: '🍷'
+      icon: '🍷',
+      isActive: false
     }
   ];
 
@@ -96,8 +123,15 @@ export default function DemoPage() {
                 <p className="text-gray-700 mb-6 leading-relaxed">
                   {product.description}
                 </p>
-                <button className="w-full px-4 py-3 bg-black text-white font-bold rounded hover:bg-gray-800 transition-colors">
-                  View Demo
+                <button 
+                  disabled={!product.isActive}
+                  className={`w-full px-4 py-3 font-bold rounded transition-colors ${
+                    product.isActive
+                      ? 'bg-black text-white hover:bg-gray-800 cursor-pointer'
+                      : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                  }`}
+                >
+                  {product.isActive ? 'View Demo' : 'Coming Soon'}
                 </button>
               </div>
             ))}
