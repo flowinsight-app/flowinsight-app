@@ -7,7 +7,6 @@ const nextConfig: NextConfig = {
   generateEtags: true,
   productionBrowserSourceMaps: false,
   optimizeFonts: true,
-  swcMinify: false,
   
   /* Redirect old index.html to root */
   async redirects() {
@@ -46,10 +45,6 @@ const nextConfig: NextConfig = {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
           },
-          {
-            key: 'Permissions-Policy',
-            value: 'geolocation=(), microphone=(), camera=()',
-          },
         ],
       },
       /* Service Worker headers */
@@ -86,17 +81,6 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_APP_DOMAIN: 'doctor.flowinsight.app',
   },
 
-  /* PWA support */
-  webpack: (config, { isServer }) => {
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      fs: false,
-      path: false,
-      crypto: false,
-    };
-    return config;
-  },
-
   /* Image optimization */
   images: {
     formats: ['image/avif', 'image/webp'],
@@ -107,11 +91,6 @@ const nextConfig: NextConfig = {
 
   /* Custom page extensions */
   pageExtensions: ['ts', 'tsx', 'js', 'jsx'],
-
-  /* Experimental features */
-  experimental: {
-    optimizePackageImports: ['lodash-es'],
-  },
 };
 
 export default nextConfig;
