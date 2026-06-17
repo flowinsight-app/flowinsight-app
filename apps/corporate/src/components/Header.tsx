@@ -1,162 +1,125 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function Header() {
-  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [flowinsight_id, setFlowinsight_id] = useState('');
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [username, setUsername] = useState('');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  // Check if user is logged in on mount
   useEffect(() => {
-    const token = localStorage.getItem('flowinsight_token');
-    const id = localStorage.getItem('flowinsight_id');
-    
-    if (token && id) {
-      setIsLoggedIn(true);
-      setFlowinsight_id(id);
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('flowinsight_token');
+      const storedUsername = localStorage.getItem('flowinsight_id');
+      if (token && storedUsername) {
+        setIsLoggedIn(true);
+        setUsername(storedUsername.split('@')[0]); // Extract username from flowinsight_id
+      }
     }
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('flowinsight_token');
     localStorage.removeItem('flowinsight_id');
-    localStorage.removeItem('flowinsight_remember');
     document.cookie = 'flowinsight_token=; path=/; max-age=0';
-    
-    router.push('/');
+    setIsLoggedIn(false);
+    setDropdownOpen(false);
+    window.location.href = '/';
   };
 
   return (
-    <header className="bg-white border-b-2 border-gray-300">
-      <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 30 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+    <header className="sticky top-0 bg-white border-b border-gray-200 z-50 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center py-4 sm:py-5">
+          
+          {/* Logo Section */}
+          <Link 
+            href="/" 
+            className="flex items-center gap-3 hover:opacity-80 transition duration-150"
           >
-            <polyline
-              points="2,20 8,12 14,16 20,8 26,4"
-              stroke="#22c55e"
-              strokeWidth="2"
+            {/* Gradient Logo Icon */}
+            <svg 
+              width="32" 
+              height="32" 
+              viewBox="0 0 30 24" 
               fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span className="font-mono font-bold text-lg hidden sm:inline">FLOW INSIGHT</span>
-        </Link>
+              className="flex-shrink-0"
+            >
+              <defs>
+                <linearGradient id="graphGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#4285F4" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#34A853" stopOpacity="1" />
+                </linearGradient>
+              </defs>
+              <polyline
+                points="2,20 8,12 14,16 20,8 26,4"
+                stroke="url(#graphGradient)"
+                strokeWidth="2.5"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-4">
-          {isLoggedIn ? (
-            <div className="relative">
-              <button
-                onClick={() => setShowDropdown(!showDropdown)}
-                className="font-mono text-sm font-bold flex items-center gap-2 hover:bg-gray-100 px-3 py-2 rounded transition"
-              >
-                {flowinsight_id}
-                <span className={`transform transition ${showDropdown ? 'rotate-180' : ''}`}>▼</span>
-              </button>
+            {/* Logo Text */}
+            <span className="text-xl font-medium text-gray-900 tracking-wide hidden sm:inline">
+              FLOW INSIGHT
+            </span>
+          </Link>
 
-              {showDropdown && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border-2 border-gray-300 rounded-lg shadow-lg z-50">
-                  <Link
-                    href="/dashboard"
-                    className="block px-4 py-2 font-mono text-sm hover:bg-gray-100 border-b-2 border-gray-300"
-                    onClick={() => setShowDropdown(false)}
-                  >
-                    My Profile
-                  </Link>
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setShowDropdown(false);
-                    }}
-                    className="w-full text-left px-4 py-2 font-mono text-sm hover:bg-gray-100 text-red-600 font-bold"
-                  >
-                    Logout
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className="font-mono text-sm font-bold hover:underline"
-              >
-                Login
-              </Link>
-              <Link
-                href="/signup"
-                className="font-mono text-sm font-bold bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition"
-              >
-                Sign Up
-              </Link>
-            </>
-          )}
+          {/* Navigation - Right Side */}
+          <div className="flex items-center gap-2 sm:gap-6">
+            {isLoggedIn ? (
+              // Logged In: Show Username and Dropdown
+              <div className="relative">
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 rounded-lg transition duration-150"
+                >
+                  <span className="hidden sm:inline">{username}</span>
+                  <span className="text-xs">▼</span>
+                </button>
+                
+                {/* Dropdown Menu */}
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                    <Link 
+                      href="/dashboard"
+                      className="block px-4 sm:px-6 py-3 text-sm font-medium text-gray-900 hover:bg-gray-50 transition"
+                    >
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 sm:px-6 py-3 text-sm font-medium text-red-500 hover:bg-red-50 transition border-t border-gray-200"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              // Not Logged In: Show Sign In and Get Started
+              <div className="flex items-center gap-2 sm:gap-4">
+                <Link 
+                  href="/login"
+                  className="px-3 sm:px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 rounded-lg transition duration-150"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/signup"
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 sm:px-6 py-2.5 rounded-lg font-medium text-sm transition duration-150 shadow-sm hover:shadow-md"
+                >
+                  Get Started
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden font-mono text-2xl font-bold"
-        >
-          {isMobileMenuOpen ? '✕' : '☰'}
-        </button>
       </div>
-
-      {/* Mobile Navigation */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden bg-white border-t-2 border-gray-300 p-4 space-y-3">
-          {isLoggedIn ? (
-            <>
-              <div className="font-mono text-sm font-bold mb-2">{flowinsight_id}</div>
-              <Link
-                href="/dashboard"
-                className="block font-mono text-sm font-bold hover:bg-gray-100 px-3 py-2 rounded"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                My Profile
-              </Link>
-              <button
-                onClick={() => {
-                  handleLogout();
-                  setIsMobileMenuOpen(false);
-                }}
-                className="w-full text-left font-mono text-sm font-bold hover:bg-gray-100 text-red-600 px-3 py-2 rounded"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className="block font-mono text-sm font-bold hover:bg-gray-100 px-3 py-2 rounded"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Login
-              </Link>
-              <Link
-                href="/signup"
-                className="block font-mono text-sm font-bold bg-black text-white px-3 py-2 rounded hover:bg-gray-800 transition text-center"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Sign Up
-              </Link>
-            </>
-          )}
-        </div>
-      )}
     </header>
   );
 }
