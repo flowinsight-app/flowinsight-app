@@ -20,7 +20,7 @@ export default function Home() {
     },
     {
       title: 'Emergency Medical Support',
-      description: 'Get urgent medical help when you need it most - find available doctors instantly',
+      description: 'Get urgent medical help when you really need it most - find available doctors instantly',
       icon: '🚑'
     },
     {
