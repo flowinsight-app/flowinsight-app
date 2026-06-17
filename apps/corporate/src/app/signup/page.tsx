@@ -7,7 +7,7 @@ import Footer from '@/components/Footer';
 
 export default function SignupPage() {
   const router = useRouter();
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://flowinsight-app-production.up.railway.app';
+  const API_BASE_URL = 'https://flowinsight-app-production.up.railway.app';
 
   const [formData, setFormData] = useState({
     full_name: '',
@@ -123,7 +123,10 @@ export default function SignupPage() {
         // Store token in localStorage
         localStorage.setItem('flowinsight_token', data.token);
         localStorage.setItem('flowinsight_id', data.data.flowinsight_id);
-        
+
+        // Store token in cookie for middleware
+        document.cookie = `flowinsight_token=${data.token}; path=/; max-age=86400`;
+
         // Redirect after 2 seconds
         setTimeout(() => {
           router.push('/dashboard');
@@ -189,13 +192,13 @@ export default function SignupPage() {
             <form onSubmit={handleSignup} className="space-y-4">
               {/* Full Name */}
               <div>
-                <label className="block text-sm font-mono font-bold mb-2">Full Name *</label>
+                <label className="block text-sm font-mono font-bold mb-2">Your Name *</label>
                 <input
                   type="text"
                   value={formData.full_name}
                   onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                   className="w-full border-2 border-gray-300 rounded px-3 py-2 font-mono text-sm focus:outline-none focus:border-black transition"
-                  placeholder="Vineeth K Kolarath"
+                  placeholder="John Doe"
                 />
                 {errors.full_name && (
                   <p className="text-red-600 text-xs mt-1 font-mono">{errors.full_name}</p>
@@ -212,7 +215,7 @@ export default function SignupPage() {
                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                     onBlur={handleUsernameBlur}
                     className="w-full border-2 border-gray-300 rounded px-3 py-2 font-mono text-sm focus:outline-none focus:border-black transition"
-                    placeholder="vineethkolarath"
+                    placeholder="yourname"
                   />
                   {checkingUsername && (
                     <span className="absolute right-3 top-2.5 text-gray-500 text-sm font-mono">
@@ -220,10 +223,10 @@ export default function SignupPage() {
                     </span>
                   )}
                   {usernameAvailable === true && (
-                    <span className="absolute right-3 top-2.5 text-green-600 text-lg">✓</span>
+                    <span className="absolute right-3 top-2.5 text-green-600">✓</span>
                   )}
                   {usernameAvailable === false && (
-                    <span className="absolute right-3 top-2.5 text-red-600 text-lg">✗</span>
+                    <span className="absolute right-3 top-2.5 text-red-600">✗</span>
                   )}
                 </div>
                 <p className="text-gray-500 text-xs mt-1 font-mono">
@@ -242,7 +245,7 @@ export default function SignupPage() {
                   value={formData.email_id}
                   onChange={(e) => setFormData({ ...formData, email_id: e.target.value })}
                   className="w-full border-2 border-gray-300 rounded px-3 py-2 font-mono text-sm focus:outline-none focus:border-black transition"
-                  placeholder="vineeth@example.com"
+                  placeholder="your@email.com"
                 />
                 {errors.email_id && (
                   <p className="text-red-600 text-xs mt-1 font-mono">{errors.email_id}</p>
