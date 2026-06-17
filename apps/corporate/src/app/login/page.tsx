@@ -99,7 +99,7 @@ export default function LoginPage() {
                   value={formData.flowinsight_id}
                   onChange={(e) => setFormData({ ...formData, flowinsight_id: e.target.value })}
                   className="w-full border-2 border-gray-300 rounded px-3 py-2 font-mono text-sm focus:outline-none focus:border-black transition"
-                  placeholder="yourname@flowinsight.app"
+                  placeholder="username@flowinsight.app"
                 />
                 {errors.flowinsight_id && (
                   <p className="text-red-600 text-xs mt-1 font-mono">{errors.flowinsight_id}</p>
