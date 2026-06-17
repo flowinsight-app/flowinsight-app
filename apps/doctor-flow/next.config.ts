@@ -6,7 +6,6 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   generateEtags: true,
   productionBrowserSourceMaps: false,
-  optimizeFonts: true,
   
   /* Redirect old index.html to root */
   async redirects() {
