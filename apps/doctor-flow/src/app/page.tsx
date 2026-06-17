@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, MapPin, ChevronDown, ArrowRight } from 'lucide-react';
 
 export default function Home() {
   const [activePoint, setActivePoint] = useState(0);
@@ -250,10 +249,9 @@ export default function Home() {
                 {/* CTA Button */}
                 <Link
                   href={userType.href}
-                  className="w-full px-6 py-3 text-sm font-bold border-2 border-gray-800 bg-white text-black rounded hover:bg-gray-100 transition text-center flex items-center justify-center gap-2"
+                  className="w-full px-6 py-3 text-sm font-bold border-2 border-gray-800 bg-white text-black rounded hover:bg-gray-100 transition text-center"
                 >
-                  Login / Sign Up
-                  <ArrowRight className="w-4 h-4" />
+                  Login / Sign Up →
                 </Link>
               </div>
             ))}
