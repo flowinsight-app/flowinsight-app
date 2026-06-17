@@ -1,18 +1,21 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export default function SignupPage() {
+  const router = useRouter();
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://flowinsight-app-production.up.railway.app';
+
   const [formData, setFormData] = useState({
-    fullName: '',
+    full_name: '',
     username: '',
-    email: '',
-    mobileNumber: '',
+    email_id: '',
+    mobile_number: '',
     password: '',
-    confirmPassword: ''
+    confirm_password: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -21,23 +24,8 @@ export default function SignupPage() {
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const [checkingUsername, setCheckingUsername] = useState(false);
 
-  // Handle input change
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
-  };
-
-  // Real-time username availability check
-  const checkUsernameAvailability = async (username: string) => {
+  // Check username availability
+  const checkUsername = async (username: string) => {
     if (username.length < 3) {
       setUsernameAvailable(null);
       return;
@@ -45,74 +33,67 @@ export default function SignupPage() {
 
     setCheckingUsername(true);
     try {
-      // TODO: Replace with actual backend API call
-      setUsernameAvailable(true);
+      const response = await fetch(
+        `${API_BASE_URL}/api/v1/auth/check-username?username=${username}`,
+        { method: 'GET' }
+      );
+      const data = await response.json();
+      setUsernameAvailable(data.available);
     } catch (error) {
       console.error('Error checking username:', error);
+      setUsernameAvailable(null);
     } finally {
       setCheckingUsername(false);
     }
   };
 
-  // Handle username blur to check availability
+  // Handle username blur
   const handleUsernameBlur = () => {
-    if (formData.username.length >= 3) {
-      checkUsernameAvailability(formData.username);
-    }
+    checkUsername(formData.username);
   };
 
   // Validate form
-  const validateForm = (): boolean => {
+  const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
-    } else if (formData.fullName.trim().length < 2) {
-      newErrors.fullName = 'Full name must be at least 2 characters';
+    if (!formData.full_name.trim()) {
+      newErrors.full_name = 'Full name is required';
     }
 
-    if (!formData.username.trim()) {
-      newErrors.username = 'Username is required';
-    } else if (formData.username.length < 3) {
+    if (!formData.username || formData.username.length < 3) {
       newErrors.username = 'Username must be at least 3 characters';
-    } else if (formData.username.length > 30) {
-      newErrors.username = 'Username must not exceed 30 characters';
-    } else if (!/^[a-zA-Z0-9_]+$/.test(formData.username)) {
-      newErrors.username = 'Username can only contain letters, numbers, and underscores';
-    } else if (!usernameAvailable) {
-      newErrors.username = 'Username is already taken';
     }
 
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
+    if (!formData.email_id.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      newErrors.email_id = 'Valid email is required';
     }
 
-    if (!formData.mobileNumber.trim()) {
-      newErrors.mobileNumber = 'Mobile number is required';
-    } else if (!/^[0-9+\-\s()]{10,13}$/.test(formData.mobileNumber.replace(/\s/g, ''))) {
-      newErrors.mobileNumber = 'Please enter a valid mobile number';
+    if (!formData.mobile_number.match(/^[0-9]{10,13}$/)) {
+      newErrors.mobile_number = 'Valid mobile number required (10-13 digits)';
     }
 
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
+    if (formData.password.length < 8) {
       newErrors.password = 'Password must be at least 8 characters';
     }
 
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+    if (formData.password !== formData.confirm_password) {
+      newErrors.confirm_password = 'Passwords do not match';
+    }
+
+    if (usernameAvailable === false) {
+      newErrors.username = 'Username already taken';
+    }
+
+    if (usernameAvailable === null && formData.username) {
+      newErrors.username = 'Please check username availability';
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle form submission
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Handle signup
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) {
@@ -121,231 +102,229 @@ export default function SignupPage() {
 
     setLoading(true);
     try {
-      // TODO: Replace with actual backend API call
-      setSuccess(true);
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          full_name: formData.full_name,
+          username: formData.username,
+          email_id: formData.email_id,
+          mobile_number: formData.mobile_number,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSuccess(true);
+        // Store token in localStorage
+        localStorage.setItem('flowinsight_token', data.token);
+        localStorage.setItem('flowinsight_id', data.data.flowinsight_id);
+        
+        // Redirect after 2 seconds
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 2000);
+      } else {
+        setErrors({ submit: data.error || 'Signup failed' });
+      }
     } catch (error) {
-      setErrors({ submit: 'An error occurred during signup. Please try again.' });
+      console.error('Signup error:', error);
+      setErrors({ submit: 'Network error. Please try again.' });
     } finally {
       setLoading(false);
     }
   };
 
-  // Success Message Screen
+  // Success screen
   if (success) {
     return (
-      <div className="w-full bg-white text-black font-mono">
+      <div className="min-h-screen flex flex-col">
         <Header />
-
-        <div className="pt-20"></div>
-
-        {/* SUCCESS MESSAGE */}
-        <section className="w-full py-20 sm:py-32 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-300 min-h-screen flex items-center justify-center">
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="mb-8">
-              <div className="text-6xl mb-6">✓</div>
-              <h1 className="text-4xl sm:text-5xl font-bold text-green-600 mb-4">
-                Account Created Successfully!
-              </h1>
-              <p className="text-lg sm:text-xl text-gray-700 mb-8">
-                Your Flow Insight account is ready to use.
+        <main className="flex-1 flex items-center justify-center px-4 py-20">
+          <div className="w-full max-w-md">
+            <div className="bg-green-50 border-2 border-green-300 rounded-lg p-8 text-center">
+              <div className="text-6xl mb-4">✅</div>
+              <h2 className="text-2xl font-bold mb-2 font-mono">Account Created Successfully!</h2>
+              <p className="text-gray-600 mb-6 font-mono text-sm">
+                Your Flow Insight account is ready. Redirecting to dashboard...
               </p>
-              <p className="text-gray-600 mb-12 text-sm sm:text-base">
-                <strong>{formData.username}@flowinsight.app</strong>
-              </p>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/login"
-                className="px-8 py-3 text-sm font-mono border-2 border-black bg-black text-white rounded hover:bg-gray-800 transition-colors font-bold"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/"
-                className="px-8 py-3 text-sm font-mono border-2 border-gray-400 bg-white text-black rounded hover:bg-gray-100 transition-colors font-bold"
-              >
-                Go Home
-              </Link>
+              <div className="space-y-3">
+                <button
+                  onClick={() => router.push('/dashboard')}
+                  className="w-full bg-black text-white py-3 rounded font-mono font-bold hover:bg-gray-800 transition"
+                >
+                  Go to Dashboard Now
+                </button>
+                <button
+                  onClick={() => router.push('/')}
+                  className="w-full bg-gray-200 text-black py-3 rounded font-mono font-bold hover:bg-gray-300 transition"
+                >
+                  Back to Home
+                </button>
+              </div>
             </div>
           </div>
-        </section>
-
+        </main>
         <Footer />
       </div>
     );
   }
 
-  // Signup Form Screen
+  // Signup form
   return (
-    <div className="w-full bg-white text-black font-mono">
+    <div className="min-h-screen flex flex-col">
       <Header />
-
-      <div className="pt-20"></div>
-
-      {/* SIGNUP FORM */}
-      <section className="w-full py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-300 min-h-screen flex items-center justify-center">
-        <div className="max-w-md w-full">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl sm:text-5xl font-bold text-black mb-4">
-              Create Account
-            </h1>
-            <p className="text-gray-700 text-sm sm:text-base">
-              Join Flow Insight to get started
+      <main className="flex-1 flex items-center justify-center px-4 py-20">
+        <div className="w-full max-w-md">
+          <div className="bg-white border-2 border-gray-300 rounded-lg p-8">
+            <h1 className="text-2xl font-bold mb-2 font-mono">Create Account</h1>
+            <p className="text-gray-600 mb-8 font-mono text-sm">
+              Join Flow Insight and transform your business intelligence
             </p>
-          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Full Name */}
-            <div>
-              <label className="block text-sm font-bold text-black mb-2">
-                Full Name
-              </label>
-              <input
-                type="text"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-                placeholder="John Doe"
-                className="w-full px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black text-sm sm:text-base"
-              />
-              {errors.fullName && (
-                <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.fullName}</p>
-              )}
-            </div>
-
-            {/* Username */}
-            <div>
-              <label className="block text-sm font-bold text-black mb-2">
-                Username
-              </label>
-              <div className="flex gap-2 flex-col sm:flex-row">
+            <form onSubmit={handleSignup} className="space-y-4">
+              {/* Full Name */}
+              <div>
+                <label className="block text-sm font-mono font-bold mb-2">Full Name *</label>
                 <input
                   type="text"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  onBlur={handleUsernameBlur}
-                  placeholder="john_doe"
-                  className="flex-1 px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black text-sm sm:text-base"
+                  value={formData.full_name}
+                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                  className="w-full border-2 border-gray-300 rounded px-3 py-2 font-mono text-sm focus:outline-none focus:border-black transition"
+                  placeholder="Vineeth K Kolarath"
                 />
-                <span className="px-4 py-2 bg-gray-100 border border-gray-400 rounded text-gray-700 whitespace-nowrap text-sm sm:text-base">
-                  @flowinsight.app
-                </span>
+                {errors.full_name && (
+                  <p className="text-red-600 text-xs mt-1 font-mono">{errors.full_name}</p>
+                )}
               </div>
-              {checkingUsername && (
-                <p className="text-gray-600 text-xs sm:text-sm mt-1">Checking availability...</p>
+
+              {/* Username */}
+              <div>
+                <label className="block text-sm font-mono font-bold mb-2">Username *</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={formData.username}
+                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                    onBlur={handleUsernameBlur}
+                    className="w-full border-2 border-gray-300 rounded px-3 py-2 font-mono text-sm focus:outline-none focus:border-black transition"
+                    placeholder="vineethkolarath"
+                  />
+                  {checkingUsername && (
+                    <span className="absolute right-3 top-2.5 text-gray-500 text-sm font-mono">
+                      checking...
+                    </span>
+                  )}
+                  {usernameAvailable === true && (
+                    <span className="absolute right-3 top-2.5 text-green-600 text-lg">✓</span>
+                  )}
+                  {usernameAvailable === false && (
+                    <span className="absolute right-3 top-2.5 text-red-600 text-lg">✗</span>
+                  )}
+                </div>
+                <p className="text-gray-500 text-xs mt-1 font-mono">
+                  @flowinsight.app will be added automatically
+                </p>
+                {errors.username && (
+                  <p className="text-red-600 text-xs mt-1 font-mono">{errors.username}</p>
+                )}
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-mono font-bold mb-2">Email *</label>
+                <input
+                  type="email"
+                  value={formData.email_id}
+                  onChange={(e) => setFormData({ ...formData, email_id: e.target.value })}
+                  className="w-full border-2 border-gray-300 rounded px-3 py-2 font-mono text-sm focus:outline-none focus:border-black transition"
+                  placeholder="vineeth@example.com"
+                />
+                {errors.email_id && (
+                  <p className="text-red-600 text-xs mt-1 font-mono">{errors.email_id}</p>
+                )}
+              </div>
+
+              {/* Mobile */}
+              <div>
+                <label className="block text-sm font-mono font-bold mb-2">Mobile Number *</label>
+                <input
+                  type="tel"
+                  value={formData.mobile_number}
+                  onChange={(e) => setFormData({ ...formData, mobile_number: e.target.value })}
+                  className="w-full border-2 border-gray-300 rounded px-3 py-2 font-mono text-sm focus:outline-none focus:border-black transition"
+                  placeholder="9876543210"
+                />
+                {errors.mobile_number && (
+                  <p className="text-red-600 text-xs mt-1 font-mono">{errors.mobile_number}</p>
+                )}
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-mono font-bold mb-2">Password *</label>
+                <input
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className="w-full border-2 border-gray-300 rounded px-3 py-2 font-mono text-sm focus:outline-none focus:border-black transition"
+                  placeholder="••••••••"
+                />
+                {errors.password && (
+                  <p className="text-red-600 text-xs mt-1 font-mono">{errors.password}</p>
+                )}
+              </div>
+
+              {/* Confirm Password */}
+              <div>
+                <label className="block text-sm font-mono font-bold mb-2">Confirm Password *</label>
+                <input
+                  type="password"
+                  value={formData.confirm_password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, confirm_password: e.target.value })
+                  }
+                  className="w-full border-2 border-gray-300 rounded px-3 py-2 font-mono text-sm focus:outline-none focus:border-black transition"
+                  placeholder="••••••••"
+                />
+                {errors.confirm_password && (
+                  <p className="text-red-600 text-xs mt-1 font-mono">{errors.confirm_password}</p>
+                )}
+              </div>
+
+              {/* Submit Error */}
+              {errors.submit && (
+                <div className="bg-red-50 border-2 border-red-300 rounded p-3">
+                  <p className="text-red-600 text-sm font-mono">{errors.submit}</p>
+                </div>
               )}
-              {usernameAvailable === true && !checkingUsername && (
-                <p className="text-green-600 text-xs sm:text-sm mt-1">✓ Username available</p>
-              )}
-              {usernameAvailable === false && (
-                <p className="text-red-600 text-xs sm:text-sm mt-1">Username not available</p>
-              )}
-              {errors.username && (
-                <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.username}</p>
-              )}
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-black text-white py-3 rounded font-mono font-bold hover:bg-gray-800 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Creating Account...' : 'Create Account'}
+              </button>
+            </form>
+
+            {/* Footer */}
+            <div className="text-center mt-6 pt-6 border-t-2 border-gray-300">
+              <p className="text-gray-600 text-sm font-mono">
+                Already have an account?{' '}
+                <a href="/login" className="text-black font-bold hover:underline">
+                  Sign In
+                </a>
+              </p>
             </div>
-
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-bold text-black mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="john@example.com"
-                className="w-full px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black text-sm sm:text-base"
-              />
-              {errors.email && (
-                <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.email}</p>
-              )}
-            </div>
-
-            {/* Mobile Number */}
-            <div>
-              <label className="block text-sm font-bold text-black mb-2">
-                Mobile Number
-              </label>
-              <input
-                type="tel"
-                name="mobileNumber"
-                value={formData.mobileNumber}
-                onChange={handleChange}
-                placeholder="+91 9876543210"
-                className="w-full px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black text-sm sm:text-base"
-              />
-              <p className="text-gray-600 text-xs sm:text-sm mt-1">Indian format: +91 or 0 prefix</p>
-              {errors.mobileNumber && (
-                <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.mobileNumber}</p>
-              )}
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-bold text-black mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                className="w-full px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black text-sm sm:text-base"
-              />
-              {errors.password && (
-                <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.password}</p>
-              )}
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <label className="block text-sm font-bold text-black mb-2">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="••••••••"
-                className="w-full px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black text-sm sm:text-base"
-              />
-              {errors.confirmPassword && (
-                <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.confirmPassword}</p>
-              )}
-            </div>
-
-            {/* Submit Error */}
-            {errors.submit && (
-              <p className="text-red-600 text-sm text-center">{errors.submit}</p>
-            )}
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full px-4 py-3 bg-black text-white font-bold rounded hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
-            >
-              {loading ? 'Creating Account...' : 'Sign Up'}
-            </button>
-
-            {/* Login Link */}
-            <p className="text-center text-gray-700 text-xs sm:text-sm">
-              Already have an account?{' '}
-              <Link href="/login" className="text-black font-bold hover:underline">
-                Sign In
-              </Link>
-            </p>
-          </form>
+          </div>
         </div>
-      </section>
-
+      </main>
       <Footer />
     </div>
   );

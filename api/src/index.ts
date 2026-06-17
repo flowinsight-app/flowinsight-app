@@ -11,7 +11,7 @@ console.log("SUPABASE_ANON_KEY:", process.env.SUPABASE_ANON_KEY ? "✅ Loaded" :
 console.log("JWT_SECRET:", process.env.JWT_SECRET ? "✅ Loaded" : "❌ NOT LOADED");
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 // Middleware
 app.use(cors());
