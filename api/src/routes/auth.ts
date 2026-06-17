@@ -15,6 +15,11 @@ const signupSchema = Joi.object({
   password: Joi.string().min(8).required(),
 });
 
+const loginSchema = Joi.object({
+  flowinsight_id: Joi.string().required(),
+  password: Joi.string().required(),
+});
+
 const checkUsernameSchema = Joi.object({
   username: Joi.string().min(3).max(50).required(),
 });
@@ -96,6 +101,83 @@ router.post("/signup", async (req: Request, res: Response) => {
     });
   } catch (err) {
     console.error("Signup error:", err);
+    res.status(500).json({
+      success: false,
+      error: "Internal server error",
+    });
+  }
+});
+
+// POST /api/v1/auth/login
+router.post("/login", async (req: Request, res: Response) => {
+  try {
+    const { error, value } = loginSchema.validate(req.body);
+
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        error: error.details[0].message,
+      });
+    }
+
+    const { flowinsight_id, password } = value;
+
+    // Find user by flowinsight_id
+    const { data: users, error: queryError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("flowinsight_id", flowinsight_id)
+      .single();
+
+    if (queryError || !users) {
+      return res.status(401).json({
+        success: false,
+        error: "Invalid username or password",
+      });
+    }
+
+    // Verify password
+    const passwordMatch = await bcrypt.compare(password, users.password_hash);
+
+    if (!passwordMatch) {
+      return res.status(401).json({
+        success: false,
+        error: "Invalid username or password",
+      });
+    }
+
+    // Check if account is active
+    if (users.user_status !== "active") {
+      return res.status(403).json({
+        success: false,
+        error: "Account is not active",
+      });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      {
+        id: users.id,
+        flowinsight_id: users.flowinsight_id,
+        email: users.email_id,
+      },
+      process.env.JWT_SECRET || "your_jwt_secret_key_min_32_characters",
+      { expiresIn: "24h" }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      data: {
+        id: users.id,
+        flowinsight_id: users.flowinsight_id,
+        full_name: users.full_name,
+        email: users.email_id,
+      },
+      token,
+    });
+  } catch (err) {
+    console.error("Login error:", err);
     res.status(500).json({
       success: false,
       error: "Internal server error",
