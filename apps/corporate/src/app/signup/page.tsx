@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -26,7 +28,6 @@ export default function SignupPage() {
       ...prev,
       [name]: value
     }));
-    // Clear error for this field
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -45,13 +46,6 @@ export default function SignupPage() {
     setCheckingUsername(true);
     try {
       // TODO: Replace with actual backend API call
-      // const response = await fetch(`/api/v1/auth/check-username?username=${username}`);
-      // const data = await response.json();
-      // setUsernameAvailable(data.available);
-
-      // For now, simulate availability check
-      const flowinsightId = `${username}@flowinsight.app`;
-      // Simulated check (backend will be real)
       setUsernameAvailable(true);
     } catch (error) {
       console.error('Error checking username:', error);
@@ -98,7 +92,7 @@ export default function SignupPage() {
     if (!formData.mobileNumber.trim()) {
       newErrors.mobileNumber = 'Mobile number is required';
     } else if (!/^[0-9+\-\s()]{10,13}$/.test(formData.mobileNumber.replace(/\s/g, ''))) {
-      newErrors.mobileNumber = 'Please enter a valid mobile number (10-13 digits)';
+      newErrors.mobileNumber = 'Please enter a valid mobile number';
     }
 
     if (!formData.password) {
@@ -128,25 +122,6 @@ export default function SignupPage() {
     setLoading(true);
     try {
       // TODO: Replace with actual backend API call
-      // const response = await fetch('/api/v1/auth/signup', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     fullName: formData.fullName,
-      //     username: formData.username,
-      //     email: formData.email,
-      //     mobileNumber: formData.mobileNumber,
-      //     password: formData.password
-      //   })
-      // });
-      //
-      // const data = await response.json();
-      // if (!data.success) {
-      //   setErrors({ submit: data.error });
-      //   return;
-      // }
-
-      // Simulated success
       setSuccess(true);
     } catch (error) {
       setErrors({ submit: 'An error occurred during signup. Please try again.' });
@@ -159,34 +134,7 @@ export default function SignupPage() {
   if (success) {
     return (
       <div className="w-full bg-white text-black font-mono">
-        {/* HEADER */}
-        <header className="fixed w-full bg-white border-b border-gray-300 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <span className="text-2xl font-bold text-black">FLOW INSIGHT</span>
-              <svg width="32" height="32" viewBox="0 0 32 32" className="">
-                <polyline
-                  points="2,20 8,12 14,16 20,8 26,4"
-                  fill="none"
-                  stroke="#22c55e"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </Link>
-            <div className="relative group">
-              <button className="px-4 py-2 text-sm font-mono border border-gray-400 rounded hover:bg-gray-100">
-                My Account ▼
-              </button>
-              <div className="absolute right-0 mt-0 w-32 bg-white border border-gray-400 rounded shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
-                <Link href="/login" className="block px-4 py-2 text-sm hover:bg-gray-100 border-b border-gray-300">
-                  Login
-                </Link>
-              </div>
-            </div>
-          </div>
-        </header>
+        <Header />
 
         <div className="pt-20"></div>
 
@@ -201,7 +149,7 @@ export default function SignupPage() {
               <p className="text-lg sm:text-xl text-gray-700 mb-8">
                 Your Flow Insight account is ready to use.
               </p>
-              <p className="text-gray-600 mb-12">
+              <p className="text-gray-600 mb-12 text-sm sm:text-base">
                 <strong>{formData.username}@flowinsight.app</strong>
               </p>
             </div>
@@ -224,47 +172,7 @@ export default function SignupPage() {
           </div>
         </section>
 
-        {/* FOOTER */}
-        <footer className="w-full bg-black text-white py-12 px-4 sm:px-6 lg:px-8 border-t border-gray-700">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-              <div>
-                <h4 className="font-bold mb-4">Product</h4>
-                <ul className="space-y-2 text-sm text-gray-300">
-                  <li><a href="#" className="hover:text-white">Features</a></li>
-                  <li><a href="#" className="hover:text-white">Pricing</a></li>
-                  <li><a href="#" className="hover:text-white">Security</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-bold mb-4">Company</h4>
-                <ul className="space-y-2 text-sm text-gray-300">
-                  <li><a href="#" className="hover:text-white">About</a></li>
-                  <li><a href="#" className="hover:text-white">Blog</a></li>
-                  <li><a href="#" className="hover:text-white">Careers</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-bold mb-4">Resources</h4>
-                <ul className="space-y-2 text-sm text-gray-300">
-                  <li><a href="#" className="hover:text-white">Documentation</a></li>
-                  <li><a href="#" className="hover:text-white">Support</a></li>
-                  <li><a href="#" className="hover:text-white">Contact</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-bold mb-4">Legal</h4>
-                <ul className="space-y-2 text-sm text-gray-300">
-                  <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
-                  <li><a href="#" className="hover:text-white">Terms of Service</a></li>
-                </ul>
-              </div>
-            </div>
-            <div className="border-t border-gray-700 pt-8 text-center text-sm text-gray-400">
-              <p>© 2026 Ezhuthola edTech Private Limited. All rights reserved.</p>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </div>
     );
   }
@@ -272,34 +180,7 @@ export default function SignupPage() {
   // Signup Form Screen
   return (
     <div className="w-full bg-white text-black font-mono">
-      {/* HEADER */}
-      <header className="fixed w-full bg-white border-b border-gray-300 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <span className="text-2xl font-bold text-black">FLOW INSIGHT</span>
-            <svg width="32" height="32" viewBox="0 0 32 32" className="">
-              <polyline
-                points="2,20 8,12 14,16 20,8 26,4"
-                fill="none"
-                stroke="#22c55e"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Link>
-          <div className="relative group">
-            <button className="px-4 py-2 text-sm font-mono border border-gray-400 rounded hover:bg-gray-100">
-              My Account ▼
-            </button>
-            <div className="absolute right-0 mt-0 w-32 bg-white border border-gray-400 rounded shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
-              <Link href="/login" className="block px-4 py-2 text-sm hover:bg-gray-100 border-b border-gray-300">
-                Login
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <div className="pt-20"></div>
 
@@ -310,7 +191,7 @@ export default function SignupPage() {
             <h1 className="text-4xl sm:text-5xl font-bold text-black mb-4">
               Create Account
             </h1>
-            <p className="text-gray-700">
+            <p className="text-gray-700 text-sm sm:text-base">
               Join Flow Insight to get started
             </p>
           </div>
@@ -327,10 +208,10 @@ export default function SignupPage() {
                 value={formData.fullName}
                 onChange={handleChange}
                 placeholder="John Doe"
-                className="w-full px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black"
+                className="w-full px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black text-sm sm:text-base"
               />
               {errors.fullName && (
-                <p className="text-red-600 text-sm mt-1">{errors.fullName}</p>
+                <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.fullName}</p>
               )}
             </div>
 
@@ -339,7 +220,7 @@ export default function SignupPage() {
               <label className="block text-sm font-bold text-black mb-2">
                 Username
               </label>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-col sm:flex-row">
                 <input
                   type="text"
                   name="username"
@@ -347,23 +228,23 @@ export default function SignupPage() {
                   onChange={handleChange}
                   onBlur={handleUsernameBlur}
                   placeholder="john_doe"
-                  className="flex-1 px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black"
+                  className="flex-1 px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black text-sm sm:text-base"
                 />
-                <span className="px-4 py-2 bg-gray-100 border border-gray-400 rounded text-gray-700 whitespace-nowrap">
+                <span className="px-4 py-2 bg-gray-100 border border-gray-400 rounded text-gray-700 whitespace-nowrap text-sm sm:text-base">
                   @flowinsight.app
                 </span>
               </div>
               {checkingUsername && (
-                <p className="text-gray-600 text-sm mt-1">Checking availability...</p>
+                <p className="text-gray-600 text-xs sm:text-sm mt-1">Checking availability...</p>
               )}
               {usernameAvailable === true && !checkingUsername && (
-                <p className="text-green-600 text-sm mt-1">✓ Username available</p>
+                <p className="text-green-600 text-xs sm:text-sm mt-1">✓ Username available</p>
               )}
               {usernameAvailable === false && (
-                <p className="text-red-600 text-sm mt-1">Username not available</p>
+                <p className="text-red-600 text-xs sm:text-sm mt-1">Username not available</p>
               )}
               {errors.username && (
-                <p className="text-red-600 text-sm mt-1">{errors.username}</p>
+                <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.username}</p>
               )}
             </div>
 
@@ -378,10 +259,10 @@ export default function SignupPage() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="john@example.com"
-                className="w-full px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black"
+                className="w-full px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black text-sm sm:text-base"
               />
               {errors.email && (
-                <p className="text-red-600 text-sm mt-1">{errors.email}</p>
+                <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.email}</p>
               )}
             </div>
 
@@ -396,11 +277,11 @@ export default function SignupPage() {
                 value={formData.mobileNumber}
                 onChange={handleChange}
                 placeholder="+91 9876543210"
-                className="w-full px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black"
+                className="w-full px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black text-sm sm:text-base"
               />
-              <p className="text-gray-600 text-xs mt-1">Indian format: +91 or 0 prefix</p>
+              <p className="text-gray-600 text-xs sm:text-sm mt-1">Indian format: +91 or 0 prefix</p>
               {errors.mobileNumber && (
-                <p className="text-red-600 text-sm mt-1">{errors.mobileNumber}</p>
+                <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.mobileNumber}</p>
               )}
             </div>
 
@@ -415,10 +296,10 @@ export default function SignupPage() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="••••••••"
-                className="w-full px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black"
+                className="w-full px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black text-sm sm:text-base"
               />
               {errors.password && (
-                <p className="text-red-600 text-sm mt-1">{errors.password}</p>
+                <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.password}</p>
               )}
             </div>
 
@@ -433,10 +314,10 @@ export default function SignupPage() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 placeholder="••••••••"
-                className="w-full px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black"
+                className="w-full px-4 py-2 border border-gray-400 rounded bg-white text-black focus:outline-none focus:border-black text-sm sm:text-base"
               />
               {errors.confirmPassword && (
-                <p className="text-red-600 text-sm mt-1">{errors.confirmPassword}</p>
+                <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.confirmPassword}</p>
               )}
             </div>
 
@@ -449,13 +330,13 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-4 py-3 bg-black text-white font-bold rounded hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-4 py-3 bg-black text-white font-bold rounded hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
             >
               {loading ? 'Creating Account...' : 'Sign Up'}
             </button>
 
             {/* Login Link */}
-            <p className="text-center text-gray-700 text-sm">
+            <p className="text-center text-gray-700 text-xs sm:text-sm">
               Already have an account?{' '}
               <Link href="/login" className="text-black font-bold hover:underline">
                 Sign In
@@ -465,47 +346,7 @@ export default function SignupPage() {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="w-full bg-black text-white py-12 px-4 sm:px-6 lg:px-8 border-t border-gray-700">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-            <div>
-              <h4 className="font-bold mb-4">Product</h4>
-              <ul className="space-y-2 text-sm text-gray-300">
-                <li><a href="#" className="hover:text-white">Features</a></li>
-                <li><a href="#" className="hover:text-white">Pricing</a></li>
-                <li><a href="#" className="hover:text-white">Security</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm text-gray-300">
-                <li><a href="#" className="hover:text-white">About</a></li>
-                <li><a href="#" className="hover:text-white">Blog</a></li>
-                <li><a href="#" className="hover:text-white">Careers</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Resources</h4>
-              <ul className="space-y-2 text-sm text-gray-300">
-                <li><a href="#" className="hover:text-white">Documentation</a></li>
-                <li><a href="#" className="hover:text-white">Support</a></li>
-                <li><a href="#" className="hover:text-white">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm text-gray-300">
-                <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white">Terms of Service</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-700 pt-8 text-center text-sm text-gray-400">
-            <p>© 2026 Ezhuthola edTech Private Limited. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
