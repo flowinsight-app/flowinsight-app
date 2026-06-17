@@ -30,7 +30,7 @@ export default function Home() {
     },
     {
       title: 'For Doctors',
-      description: 'Grow your practice, find flexible opportunities, and manage appointments efficiently',
+      description: 'Grow your practice, find flexible opportunities and manage appointments efficiently',
       icon: '💼'
     },
     {
