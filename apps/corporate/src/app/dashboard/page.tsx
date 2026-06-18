@@ -1,255 +1,265 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-export default function DashboardPage() {
-  const router = useRouter();
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+export default function Dashboard() {
+  const [fullName, setFullName] = useState<string | null>(null);
+  const [flowinsightId, setFlowinsightId] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('flowinsight_token');
-    const flowinsight_id = localStorage.getItem('flowinsight_id');
-    
-    if (!token || !flowinsight_id) {
-      router.push('/login');
-      return;
+    const name = localStorage.getItem('flowinsight_fullname');
+    const id = localStorage.getItem('flowinsight_id');
+    setFullName(name);
+    setFlowinsightId(id);
+  }, []);
+
+  const myProducts = [
+    {
+      name: 'Clinic Flow',
+      icon: '🏥',
+      color: 'bg-blue-50',
+      borderColor: '#2563EB',
+      textColor: '#2563EB',
+      description: 'Healthcare facility operations platform. Manage patients, clinics, appointments, medical records, and streamline clinical workflows.',
+      status: 'Active'
+    },
+    {
+      name: 'Doctor Flow',
+      icon: '👨‍⚕️',
+      color: 'bg-sky-50',
+      borderColor: '#4285F4',
+      textColor: '#4285F4',
+      description: 'Real-time marketplace connecting doctors with healthcare facilities. Location-aware matching, smart notifications, and direct connections.',
+      status: 'Active'
     }
+  ];
 
-    setUser({ flowinsight_id });
-    setLoading(false);
-  }, [router]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex flex-col bg-white">
-        <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-            <p className="mt-4 text-gray-600 text-sm">Loading your dashboard...</p>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+  const availableProducts = [
+    {
+      name: 'Cash Flow',
+      icon: '💰',
+      color: 'bg-green-50',
+      borderColor: '#059669',
+      textColor: '#059669',
+      description: 'Complete financial management and accounting solution. Track transactions, manage invoices, analyze cash flow, and generate financial reports in real-time.'
+    },
+    {
+      name: 'Guest Flow',
+      icon: '🏨',
+      color: 'bg-orange-50',
+      borderColor: '#EA580C',
+      textColor: '#EA580C',
+      description: 'Comprehensive guest management system. Manage bookings, reservations, loyalty programs, and guest communications for hospitality services.'
+    },
+    {
+      name: 'Cuisine Flow',
+      icon: '🍽️',
+      color: 'bg-purple-50',
+      borderColor: '#7C3AED',
+      textColor: '#7C3AED',
+      description: 'Restaurant operations management. Food cost tracking, recipe management, menu optimization, and kitchen operations for culinary businesses.'
+    },
+    {
+      name: 'Spirit Flow',
+      icon: '🍷',
+      color: 'bg-red-50',
+      borderColor: '#F43F5E',
+      textColor: '#F43F5E',
+      description: 'Bar and liquor management system. Real-time inventory tracking, variance detection, stock transfers, and profit optimization for beverage operations.'
+    }
+  ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="w-full bg-white text-gray-900">
       <Header />
-      
-      <main className="flex-1 px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+
+      <div className="pt-4"></div>
+
+      {/* ===== WELCOME SECTION ===== */}
+      <section className="w-full px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900">
         <div className="max-w-7xl mx-auto w-full">
-          
-          {/* Welcome Section */}
-          <div className="mb-12 sm:mb-16">
-            <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-gray-200 rounded-xl p-6 sm:p-8">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                  <h1 className="text-3xl sm:text-4xl font-medium text-gray-900 mb-2">
-                    Welcome back,{' '}
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-green-600">
-                      {user?.flowinsight_id?.split('@')[0] || 'User'}
-                    </span>
-                  </h1>
-                  <p className="text-gray-600 text-sm sm:text-base">
-                    You're logged in as <span className="font-medium">{user?.flowinsight_id}</span>
-                  </p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left Content */}
+            <div className="text-white">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                Welcome back,{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-cyan-200">
+                  {fullName || 'User'}
+                </span>
+                ! 👋
+              </h1>
+              
+              <p className="text-lg sm:text-xl text-blue-100 mb-8 leading-relaxed">
+                You're all set to manage your business operations with real-time intelligence and actionable insights. Let's get started!
+              </p>
+
+              {/* Stats Cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 mb-10">
+                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4 sm:p-6">
+                  <div className="text-3xl sm:text-4xl font-bold text-cyan-200 mb-2">{myProducts.length}</div>
+                  <div className="text-sm sm:text-base text-blue-100">Active Products</div>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4 sm:p-6">
+                  <div className="text-3xl sm:text-4xl font-bold text-cyan-200 mb-2">{availableProducts.length}</div>
+                  <div className="text-sm sm:text-base text-blue-100">Available</div>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4 sm:p-6 col-span-2 sm:col-span-1">
+                  <div className="text-3xl sm:text-4xl font-bold text-cyan-200 mb-2">100%</div>
+                  <div className="text-sm sm:text-base text-blue-100">Access</div>
                 </div>
               </div>
-              <p className="text-gray-600 text-sm sm:text-base mt-6 leading-relaxed">
-                Welcome to Flow Insight. Explore our suite of intelligent business solutions below. Each module is designed to give you real-time insights, root cause analysis, and actionable recommendations.
-              </p>
+
+              {/* Account Info */}
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-6">
+                <p className="text-xs sm:text-sm text-blue-200 uppercase tracking-widest font-semibold mb-2">Your Account</p>
+                <p className="text-xl sm:text-2xl font-bold text-white break-all">{flowinsightId || 'Not logged in'}</p>
+              </div>
             </div>
+
+            {/* Right Illustration */}
+            <div className="hidden lg:block">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-2xl blur-3xl opacity-20"></div>
+                <div className="relative bg-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-8 text-center">
+                  <div className="text-7xl mb-6">🚀</div>
+                  <h3 className="text-2xl font-bold text-white mb-3">Ready to Transform?</h3>
+                  <p className="text-blue-100 text-sm leading-relaxed">
+                    Harness the power of real-time intelligence to make smarter decisions faster than ever before.
+                  </p>
+                  <div className="mt-8 pt-8 border-t border-white/20">
+                    <Link
+                      href="/demo"
+                      className="inline-block bg-white text-blue-900 font-bold py-3 px-8 rounded-lg hover:bg-blue-50 transition-all duration-200"
+                    >
+                      Explore All Products
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== MY PRODUCTS SECTION ===== */}
+      <section className="w-full px-4 sm:px-6 lg:px-8 py-24 sm:py-32 bg-white">
+        <div className="max-w-7xl mx-auto w-full">
+          {/* Section Header */}
+          <div className="mb-16 sm:mb-20">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-blue-900 mb-4">
+              My Products
+            </h2>
+            <p className="text-base sm:text-lg text-gray-600">
+              Your active products that you can access and manage
+            </p>
           </div>
 
           {/* Products Grid */}
-          <div className="mb-16">
-            <div className="mb-8">
-              <h2 className="text-2xl sm:text-3xl font-medium text-gray-900 mb-2">
-                Available Modules
-              </h2>
-              <p className="text-gray-600 text-sm">
-                Explore all Flow Insight products
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              
-              {/* Spirit Flow */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6 sm:p-8 transition duration-200 hover:shadow-md"
-                style={{ borderLeftColor: '#EA4335', borderLeftWidth: '4px' }}>
-                <div className="text-5xl mb-4">🍷</div>
-                <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-3">
-                  Spirit Flow
-                </h3>
-                <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-6">
-                  Bar and liquor inventory management with real-time variance detection
-                </p>
-                <span className="inline-block bg-gray-100 text-gray-600 text-xs font-medium px-3 py-1 rounded-full">
-                  Coming Soon
-                </span>
-              </div>
-
-              {/* Staff Flow */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6 sm:p-8 transition duration-200 hover:shadow-md"
-                style={{ borderLeftColor: '#4285F4', borderLeftWidth: '4px' }}>
-                <div className="text-5xl mb-4">👥</div>
-                <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-3">
-                  Staff Flow
-                </h3>
-                <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-6">
-                  HR and attendance management with real-time insights
-                </p>
-                <span className="inline-block bg-gray-100 text-gray-600 text-xs font-medium px-3 py-1 rounded-full">
-                  Coming Soon
-                </span>
-              </div>
-
-              {/* Cash Flow */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6 sm:p-8 transition duration-200 hover:shadow-md"
-                style={{ borderLeftColor: '#34A853', borderLeftWidth: '4px' }}>
-                <div className="text-5xl mb-4">💰</div>
-                <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-3">
-                  Cash Flow
-                </h3>
-                <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-6">
-                  Financial management and accounting intelligence
-                </p>
-                <span className="inline-block bg-gray-100 text-gray-600 text-xs font-medium px-3 py-1 rounded-full">
-                  Coming Soon
-                </span>
-              </div>
-
-              {/* Cuisine Flow */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6 sm:p-8 transition duration-200 hover:shadow-md"
-                style={{ borderLeftColor: '#9C27B0', borderLeftWidth: '4px' }}>
-                <div className="text-5xl mb-4">🍽️</div>
-                <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-3">
-                  Cuisine Flow
-                </h3>
-                <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-6">
-                  Restaurant operations and menu optimization
-                </p>
-                <span className="inline-block bg-gray-100 text-gray-600 text-xs font-medium px-3 py-1 rounded-full">
-                  Coming Soon
-                </span>
-              </div>
-
-              {/* Guest Flow */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6 sm:p-8 transition duration-200 hover:shadow-md"
-                style={{ borderLeftColor: '#FBBC04', borderLeftWidth: '4px' }}>
-                <div className="text-5xl mb-4">🏨</div>
-                <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-3">
-                  Guest Flow
-                </h3>
-                <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-6">
-                  Guest management and booking system
-                </p>
-                <span className="inline-block bg-gray-100 text-gray-600 text-xs font-medium px-3 py-1 rounded-full">
-                  Coming Soon
-                </span>
-              </div>
-
-              {/* Inventory Flow */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6 sm:p-8 transition duration-200 hover:shadow-md"
-                style={{ borderLeftColor: '#FF6D00', borderLeftWidth: '4px' }}>
-                <div className="text-5xl mb-4">📦</div>
-                <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-3">
-                  Inventory Flow
-                </h3>
-                <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-6">
-                  General stock management and optimization
-                </p>
-                <span className="inline-block bg-gray-100 text-gray-600 text-xs font-medium px-3 py-1 rounded-full">
-                  Coming Soon
-                </span>
-              </div>
-
-            </div>
-          </div>
-
-          {/* Stats/Info Section */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-            
-            {/* Card 1 */}
-            <div className="bg-white border border-gray-200 rounded-xl p-6 sm:p-8">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Real-Time Intelligence
-              </h3>
-              <p className="text-gray-600 text-sm">
-                Get live insights and instant alerts for critical business events
-              </p>
-            </div>
-
-            {/* Card 2 */}
-            <div className="bg-white border border-gray-200 rounded-xl p-6 sm:p-8">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Root Cause Analysis
-              </h3>
-              <p className="text-gray-600 text-sm">
-                Understand why variances happen, not just flag them
-              </p>
-            </div>
-
-            {/* Card 3 */}
-            <div className="bg-white border border-gray-200 rounded-xl p-6 sm:p-8">
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Actionable Insights
-              </h3>
-              <p className="text-gray-600 text-sm">
-                Every insight includes recommended actions for quick decisions
-              </p>
-            </div>
-
-          </div>
-
-          {/* CTA Section */}
-          <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-gray-200 rounded-xl p-8 sm:p-12 text-center">
-            <h2 className="text-2xl sm:text-3xl font-medium text-gray-900 mb-4">
-              Ready to Explore?
-            </h2>
-            <p className="text-gray-600 text-sm sm:text-base mb-8 max-w-2xl mx-auto">
-              Check out our live demo to see Flow Insight in action. Discover how real-time intelligence can transform your business decisions.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/demo"
-                className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-medium text-sm transition duration-150 shadow-sm hover:shadow-md"
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
+            {myProducts.map((product) => (
+              <div 
+                key={product.name}
+                className={`${product.color} border-l-4 rounded-lg p-8 sm:p-10 transition-all duration-300 hover:shadow-lg hover:scale-105 border border-gray-200 group`}
+                style={{ borderLeftColor: product.borderColor }}
               >
-                View Demo
-              </Link>
-              <Link
-                href="/"
-                className="bg-white text-blue-500 border-2 border-blue-500 hover:bg-blue-50 px-8 py-3 rounded-lg font-medium text-sm transition duration-150"
-              >
-                Back to Home
-              </Link>
-            </div>
-          </div>
+                {/* Product Icon & Name */}
+                <div className="flex items-start justify-between mb-6">
+                  <div>
+                    <div className="text-5xl mb-4">{product.icon}</div>
+                    <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+                      {product.name}
+                    </h3>
+                    <div className="inline-block bg-green-100 text-green-700 text-xs font-bold px-4 py-1.5 rounded-full">
+                      ✓ {product.status}
+                    </div>
+                  </div>
+                </div>
 
+                {/* Description */}
+                <p className="text-gray-700 text-sm sm:text-base leading-relaxed mb-8">
+                  {product.description}
+                </p>
+
+                {/* Actions */}
+                <div className="flex gap-3 sm:gap-4">
+                  <button 
+                    className="flex-1 font-semibold py-3 px-6 rounded-lg transition-all duration-200 text-white"
+                    style={{ backgroundColor: product.borderColor }}
+                  >
+                    Access Now
+                  </button>
+                  <button 
+                    className="flex-1 font-semibold py-3 px-6 rounded-lg border-2 transition-all duration-200"
+                    style={{ borderColor: product.borderColor, color: product.borderColor }}
+                  >
+                    Settings
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* ===== AVAILABLE PRODUCTS SECTION ===== */}
+      <section className="w-full px-4 sm:px-6 lg:px-8 py-24 sm:py-32 bg-gray-50 border-t border-gray-200">
+        <div className="max-w-7xl mx-auto w-full">
+          {/* Section Header */}
+          <div className="mb-16 sm:mb-20">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-blue-900 mb-4">
+              Explore More Products
+            </h2>
+            <p className="text-base sm:text-lg text-gray-600">
+              Discover other Flow Insight solutions to expand your business capabilities
+            </p>
+          </div>
+
+          {/* Products Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {availableProducts.map((product) => (
+              <div 
+                key={product.name}
+                className={`${product.color} border-t-4 rounded-lg p-6 sm:p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-2 border border-gray-200 group`}
+                style={{ borderTopColor: product.borderColor }}
+              >
+                {/* Icon */}
+                <div className="text-5xl mb-4">{product.icon}</div>
+
+                {/* Name */}
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
+                  {product.name}
+                </h3>
+
+                {/* Description */}
+                <p className="text-gray-600 text-sm leading-relaxed mb-6">
+                  {product.description}
+                </p>
+
+                {/* Button */}
+                <button 
+                  className="w-full font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 text-white"
+                  style={{ backgroundColor: product.borderColor }}
+                >
+                  Learn More
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <div className="text-center mt-16 sm:mt-20">
+            <Link
+              href="/demo"
+              className="inline-block bg-blue-900 hover:bg-blue-950 text-white font-bold py-4 px-10 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+            >
+              View All Products Demo
+            </Link>
+          </div>
+        </div>
+      </section>
 
       <Footer />
     </div>

@@ -38,46 +38,46 @@ export default function Home() {
 
   const products = [
     {
+      name: 'Clinic Flow',
+      color: 'bg-blue-50',
+      borderColor: '#2563EB',
+      textColor: '#2563EB',
+      description: 'Healthcare facility operations platform. Manage patients, clinics, appointments, medical records, and streamline clinical workflows.'
+    },
+    {
+      name: 'Doctor Flow',
+      color: 'bg-sky-50',
+      borderColor: '#4285F4',
+      textColor: '#4285F4',
+      description: 'Real-time marketplace connecting doctors with healthcare facilities. Location-aware matching, smart notifications, and direct connections.'
+    },
+    {
       name: 'Cash Flow',
       color: 'bg-emerald-50',
-      borderColor: '#34A853',
-      textColor: '#34A853',
+      borderColor: '#059669',
+      textColor: '#059669',
       description: 'Complete financial management and accounting solution. Track transactions, manage invoices, analyze cash flow, and generate financial reports in real-time.'
     },
     {
       name: 'Guest Flow',
-      color: 'bg-amber-50',
-      borderColor: '#FBBC04',
-      textColor: '#F9AB00',
-      description: 'Comprehensive guest management system. Manage bookings, reservations, loyalty programs, and guest communications for hospitality services.'
-    },
-    {
-      name: 'Clinic Flow',
       color: 'bg-orange-50',
-      borderColor: '#FF6D00',
-      textColor: '#FF6D00',
-      description: 'Healthcare facility operations platform. Manage patients, clinics, appointments, medical records, and streamline clinical workflows.'
+      borderColor: '#EA580C',
+      textColor: '#EA580C',
+      description: 'Comprehensive guest management system. Manage bookings, reservations, loyalty programs, and guest communications for hospitality services.'
     },
     {
       name: 'Cuisine Flow',
       color: 'bg-purple-50',
-      borderColor: '#9C27B0',
-      textColor: '#9C27B0',
+      borderColor: '#7C3AED',
+      textColor: '#7C3AED',
       description: 'Restaurant operations management. Food cost tracking, recipe management, menu optimization, and kitchen operations for culinary businesses.'
     },
     {
       name: 'Spirit Flow',
       color: 'bg-red-50',
-      borderColor: '#EA4335',
-      textColor: '#EA4335',
+      borderColor: '#F43F5E',
+      textColor: '#F43F5E',
       description: 'Bar and liquor management system. Real-time inventory tracking, variance detection, stock transfers, and profit optimization for beverage operations.'
-    },
-    {
-      name: 'Inventory Flow',
-      color: 'bg-sky-50',
-      borderColor: '#4285F4',
-      textColor: '#4285F4',
-      description: 'Advanced inventory optimization platform. Multi-location stock management, demand forecasting, supplier coordination, and supply chain intelligence.'
     }
   ];
 
